@@ -58,11 +58,11 @@ class AddressBook {
 
     addContact(contact) {
         this.contacts.push(contact);
-        console.log(` Contact Added Successfully to ${this.name}!\n`);
+        console.log(`✅ Contact Added Successfully to ${this.name}!\n`);
     }
 
     displayContacts() {
-        console.log(`\n Address Book: ${this.name} ---`);
+        console.log(`\n--- 📖 Address Book: ${this.name} ---`);
         if (this.contacts.length === 0) {
             console.log("No contacts available.");
             return;
@@ -72,8 +72,12 @@ class AddressBook {
         });
     }
 
+    findContact(name) {
+        return this.contacts.find(c => c.firstName.toLowerCase() === name.toLowerCase());
+    }
+
     updateContact(name, updatedData) {
-        let contact = this.contacts.find(c => c.firstName.toLowerCase() === name.toLowerCase());
+        let contact = this.findContact(name);
         if (contact) {
             Object.keys(updatedData).forEach(key => {
                 try {
@@ -103,11 +107,11 @@ let addressBooks = {};
 
 function createAddressBook(name) {
     if (addressBooks[name]) {
-        console.log(`Address Book "${name}" already exists!`);
+        console.log(` Address Book "${name}" already exists!`);
         return;
     }
     addressBooks[name] = new AddressBook(name);
-    console.log(`New Address Book "${name}" Created!\n`);
+    console.log(` New Address Book "${name}" Created!\n`);
 }
 
 function getAddressBook(name) {
@@ -134,9 +138,13 @@ try {
         workBook.displayContacts();
     }
 
-    if (personalBook) {
+    let foundContact = personalBook ? personalBook.findContact("Mokshini") : null;
+    if (foundContact) {
+        console.log("\n Contact Found:", foundContact);
         personalBook.updateContact("Mokshini", { city: "Mumbai", email: "mokshini.newemail@gmail.com" });
         personalBook.displayContacts();
+    } else {
+        console.log(" Contact Not Found!");
     }
 
     if (workBook) {
