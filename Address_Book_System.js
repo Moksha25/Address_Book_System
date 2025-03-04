@@ -79,7 +79,7 @@ class AddressBook {
             return;
         }
         this.contacts.forEach((contact, index) => {
-            console.log(`${index + 1}. ${contact.firstName} ${contact.lastName} - ${contact.phoneNumber}, ${contact.email}`);
+            console.log(`${index + 1}. ${contact.firstName} ${contact.lastName} - ${contact.city}, ${contact.state}`);
         });
     }
 
@@ -116,7 +116,37 @@ class AddressBook {
 
     getContactCount() {
         let count = this.contacts.reduce((acc) => acc + 1, 0);
-        console.log(`📊 Total Contacts in "${this.name}": ${count}\n`);
+        console.log(` Total Contacts in "${this.name}": ${count}\n`);
+        return count;
+    }
+
+    searchByCity(city) {
+        let results = this.contacts.filter(c => c.city.toLowerCase() === city.toLowerCase());
+        console.log(`\n Contacts in City: ${city}`);
+        results.length === 0 
+            ? console.log("No contacts found.") 
+            : console.log(results.map(c => `${c.firstName} ${c.lastName}`).join(", "));
+        return results;
+    }
+
+    searchByState(state) {
+        let results = this.contacts.filter(c => c.state.toLowerCase() === state.toLowerCase());
+        console.log(`\n Contacts in State: ${state}`);
+        results.length === 0 
+            ? console.log("No contacts found.") 
+            : console.log(results.map(c => `${c.firstName} ${c.lastName}`).join(", "));
+        return results;
+    }
+
+    countByCity(city) {
+        let count = this.contacts.reduce((acc, c) => acc + (c.city.toLowerCase() === city.toLowerCase() ? 1 : 0), 0);
+        console.log(` Total People in City "${city}": ${count}`);
+        return count;
+    }
+
+    countByState(state) {
+        let count = this.contacts.reduce((acc, c) => acc + (c.state.toLowerCase() === state.toLowerCase() ? 1 : 0), 0);
+        console.log(` Total People in State "${state}": ${count}`);
         return count;
     }
 }
@@ -138,49 +168,24 @@ function getAddressBook(name) {
 
 try {
     createAddressBook("Personal");
-    createAddressBook("Work");
 
     let contact1 = new Contact("Mokshini", "Baglekar", "Ahinsa vihar", "Bhopal", "Madhya Pradesh", "400001", "9301000083", "mokshini.baglekar@gmail.com");
     let contact2 = new Contact("Bhavesh", "Malviya", "Vijay nagar", "Indore", "Madhya Pradesh", "110001", "7690000686", "bhavesh.malviya@gmail.com");
-    let duplicateContact = new Contact("Mokshini", "Baglekar", "Somewhere", "Pune", "Maharashtra", "411001", "9876543210", "mokshini.duplicate@gmail.com");
+    let contact3 = new Contact("Pallavi", "Parihar", "Gomti Nagar", "Lucknow", "Uttar Pradesh", "226010", "9839001123", "pallavi.parihar@gmail.com");
 
     let personalBook = getAddressBook("Personal");
-    let workBook = getAddressBook("Work");
-
     if (personalBook) {
         personalBook.addContact(contact1);
-        personalBook.addContact(duplicateContact);
+        personalBook.addContact(contact2);
+        personalBook.addContact(contact3);
         personalBook.displayContacts();
-        personalBook.getContactCount();
     }
 
-    if (workBook) {
-        workBook.addContact(contact2);
-        workBook.displayContacts();
-        workBook.getContactCount();
-    }
+    personalBook.searchByCity("Bhopal");
+    personalBook.searchByState("Madhya Pradesh");
 
-    let foundContact = personalBook ? personalBook.findContact("Mokshini") : null;
-    if (foundContact) {
-        console.log("\n🔎 Contact Found:", foundContact);
-        personalBook.updateContact("Mokshini", { city: "Mumbai", email: "mokshini.newemail@gmail.com" });
-        personalBook.displayContacts();
-        personalBook.getContactCount(); 
-    } else {
-        console.log(" Contact Not Found!");
-    }
-
-    if (workBook) {
-        workBook.deleteContact("Bhavesh");
-        workBook.displayContacts();
-        workBook.getContactCount();
-    }
-
-    if (personalBook) {
-        personalBook.deleteContact("Mokshini");
-        personalBook.displayContacts();
-        personalBook.getContactCount(); 
-    }
+    personalBook.countByCity("Indore");
+    personalBook.countByState("Madhya Pradesh");
 
 } catch (error) {
     console.error(error.message);
