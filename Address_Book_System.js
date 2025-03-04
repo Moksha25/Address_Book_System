@@ -75,7 +75,25 @@ class AddressBook {
 
     sortContactsByName() {
         this.contacts.sort((a, b) => a.firstName.localeCompare(b.firstName));
-        console.log("\nSorted Address Book Entries:");
+        console.log("\nSorted Address Book by Name:");
+        this.displayContacts();
+    }
+
+    sortContactsByCity() {
+        this.contacts.sort((a, b) => a.city.localeCompare(b.city));
+        console.log("\nSorted Address Book by City:");
+        this.displayContacts();
+    }
+
+    sortContactsByState() {
+        this.contacts.sort((a, b) => a.state.localeCompare(b.state));
+        console.log("\nSorted Address Book by State:");
+        this.displayContacts();
+    }
+
+    sortContactsByZip() {
+        this.contacts.sort((a, b) => a.zip.localeCompare(b.zip));
+        console.log("\nSorted Address Book by Zip:");
         this.displayContacts();
     }
 }
@@ -95,6 +113,9 @@ try {
 
     addressBook.displayContacts();
     addressBook.sortContactsByName();
+    addressBook.sortContactsByCity();
+    addressBook.sortContactsByState();
+    addressBook.sortContactsByZip();
 } catch (error) {
     console.error(error.message);
 }
