@@ -1,27 +1,34 @@
 class Contact {
     constructor(firstName, lastName, address, city, state, zip, phoneNumber, email) {
-        this.firstName = this.validateName(firstName);
-        this.lastName = this.validateName(lastName);
-        this.address = address;
-        this.city = city;
-        this.state = state;
+        this.firstName = this.validateName(firstName, "First Name");
+        this.lastName = this.validateName(lastName, "Last Name");
+        this.address = this.validateAddress(address, "Address");
+        this.city = this.validateAddress(city, "City");
+        this.state = this.validateAddress(state, "State");
         this.zip = this.validateZip(zip);
         this.phoneNumber = this.validatePhone(phoneNumber);
         this.email = this.validateEmail(email);
     }
 
-    validateName(name) {
-        let nameRegex = /^[A-Z][a-z]{1,}$/;
+    validateName(name, fieldName) {
+        let nameRegex = /^[A-Z][a-zA-Z]{2,}$/;
         if (!nameRegex.test(name)) {
-            throw new Error("Invalid Name: Must start with a capital letter and be at least 2 characters long.");
+            throw new Error(`${fieldName} Invalid: Must start with a capital letter and be at least 3 characters long.`);
         }
         return name;
+    }
+
+    validateAddress(value, fieldName) {
+        if (value.length < 4) {
+            throw new Error(`${fieldName} Invalid: Must be at least 4 characters long.`);
+        }
+        return value;
     }
 
     validateZip(zip) {
         let zipRegex = /^[1-9][0-9]{5}$/;
         if (!zipRegex.test(zip)) {
-            throw new Error("Invalid ZIP Code: Must be 6 digits.");
+            throw new Error("Invalid ZIP Code: Must be a 6-digit number.");
         }
         return zip;
     }
@@ -34,7 +41,6 @@ class Contact {
         return phoneNumber;
     }
 
-    // Validate Email
     validateEmail(email) {
         let emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
         if (!emailRegex.test(email)) {
@@ -44,16 +50,13 @@ class Contact {
     }
 }
 
-// Array to store contacts
 let addressBook = [];
 
-// Function to Add Contact
 function addContact(contact) {
     addressBook.push(contact);
     console.log("Contact Added Successfully!");
 }
 
-// Function to Display All Contacts
 function displayContacts() {
     console.log("\n--- Address Book Contacts ---");
     addressBook.forEach((contact, index) => {
@@ -61,18 +64,22 @@ function displayContacts() {
     });
 }
 
-// Function to Update Contact by Name
 function updateContact(name, updatedData) {
     let contact = addressBook.find(c => c.firstName.toLowerCase() === name.toLowerCase());
     if (contact) {
-        Object.assign(contact, updatedData);
+        Object.keys(updatedData).forEach(key => {
+            try {
+                contact[key] = contact[`validate${key.charAt(0).toUpperCase() + key.slice(1)}`](updatedData[key]);
+            } catch (error) {
+                console.error(error.message);
+            }
+        });
         console.log("Contact Updated Successfully!");
     } else {
         console.log("Contact Not Found!");
     }
 }
 
-// Function to Delete Contact by Name
 function deleteContact(name) {
     let index = addressBook.findIndex(c => c.firstName.toLowerCase() === name.toLowerCase());
     if (index !== -1) {
@@ -83,17 +90,19 @@ function deleteContact(name) {
     }
 }
 
-// Test the Program
 try {
-    let contact1 = new Contact("John", "Doe", "123 Street", "Mumbai", "Maharashtra", "400001", "9876543210", "john.doe@example.com");
+    let contact1 = new Contact("Mokshini", "Baglekar", "Ahinsa vihar", "Bhopal", "Madhya Pradesh", "400001", "9301000083", "mokshini.baglekar@gmail.com");
     addContact(contact1);
-    let contact2 = new Contact("Alice", "Smith", "456 Lane", "Delhi", "Delhi", "110001", "9123456789", "alice.smith@example.com");
+
+    let contact2 = new Contact("Bhavesh", "Malviya", "Vijay nagar", "Indore", "Indore", "110001", "7690000686", "bhavesh.malviya@gmail.com");
     addContact(contact2);
 
     displayContacts();
-    updateContact("John", { city: "Pune", email: "john.new@example.com" });
+
+    updateContact("Pallavi", { city: "Bhopal", email: "pallavi.parihar@gmail.com" });
     displayContacts();
-    deleteContact("Alice");
+
+    deleteContact("pallavi");
     displayContacts();
 } catch (error) {
     console.error(error.message);
