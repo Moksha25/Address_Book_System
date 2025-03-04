@@ -50,60 +50,100 @@ class Contact {
     }
 }
 
-let addressBook = [];
+class AddressBook {
+    constructor(name) {
+        this.name = name;
+        this.contacts = [];
+    }
 
-function addContact(contact) {
-    addressBook.push(contact);
-    console.log("Contact Added Successfully!");
-}
+    addContact(contact) {
+        this.contacts.push(contact);
+        console.log(` Contact Added Successfully to ${this.name}!\n`);
+    }
 
-function displayContacts() {
-    console.log("\n--- Address Book Contacts ---");
-    addressBook.forEach((contact, index) => {
-        console.log(`${index + 1}. ${contact.firstName} ${contact.lastName} - ${contact.phoneNumber}, ${contact.email}`);
-    });
-}
-
-function updateContact(name, updatedData) {
-    let contact = addressBook.find(c => c.firstName.toLowerCase() === name.toLowerCase());
-    if (contact) {
-        Object.keys(updatedData).forEach(key => {
-            try {
-                contact[key] = contact[`validate${key.charAt(0).toUpperCase() + key.slice(1)}`](updatedData[key]);
-            } catch (error) {
-                console.error(error.message);
-            }
+    displayContacts() {
+        console.log(`\n Address Book: ${this.name} ---`);
+        if (this.contacts.length === 0) {
+            console.log("No contacts available.");
+            return;
+        }
+        this.contacts.forEach((contact, index) => {
+            console.log(`${index + 1}. ${contact.firstName} ${contact.lastName} - ${contact.phoneNumber}, ${contact.email}`);
         });
-        console.log("Contact Updated Successfully!");
-    } else {
-        console.log("Contact Not Found!");
+    }
+
+    updateContact(name, updatedData) {
+        let contact = this.contacts.find(c => c.firstName.toLowerCase() === name.toLowerCase());
+        if (contact) {
+            Object.keys(updatedData).forEach(key => {
+                try {
+                    contact[key] = contact[`validate${key.charAt(0).toUpperCase() + key.slice(1)}`](updatedData[key]);
+                } catch (error) {
+                    console.error(error.message);
+                }
+            });
+            console.log(` Contact Updated Successfully in ${this.name}!`);
+        } else {
+            console.log(" Contact Not Found!");
+        }
+    }
+
+    deleteContact(name) {
+        let index = this.contacts.findIndex(c => c.firstName.toLowerCase() === name.toLowerCase());
+        if (index !== -1) {
+            this.contacts.splice(index, 1);
+            console.log(` Contact Deleted Successfully from ${this.name}!`);
+        } else {
+            console.log(" Contact Not Found!");
+        }
     }
 }
 
-function deleteContact(name) {
-    let index = addressBook.findIndex(c => c.firstName.toLowerCase() === name.toLowerCase());
-    if (index !== -1) {
-        addressBook.splice(index, 1);
-        console.log("Contact Deleted Successfully!");
-    } else {
-        console.log("Contact Not Found!");
+let addressBooks = {};
+
+function createAddressBook(name) {
+    if (addressBooks[name]) {
+        console.log(`Address Book "${name}" already exists!`);
+        return;
     }
+    addressBooks[name] = new AddressBook(name);
+    console.log(`New Address Book "${name}" Created!\n`);
+}
+
+function getAddressBook(name) {
+    return addressBooks[name] || null;
 }
 
 try {
+    createAddressBook("Personal");
+    createAddressBook("Work");
+
     let contact1 = new Contact("Mokshini", "Baglekar", "Ahinsa vihar", "Bhopal", "Madhya Pradesh", "400001", "9301000083", "mokshini.baglekar@gmail.com");
-    addContact(contact1);
+    let contact2 = new Contact("Bhavesh", "Malviya", "Vijay nagar", "Indore", "Madhya Pradesh", "110001", "7690000686", "bhavesh.malviya@gmail.com");
 
-    let contact2 = new Contact("Bhavesh", "Malviya", "Vijay nagar", "Indore", "Indore", "110001", "7690000686", "bhavesh.malviya@gmail.com");
-    addContact(contact2);
+    let personalBook = getAddressBook("Personal");
+    let workBook = getAddressBook("Work");
 
-    displayContacts();
+    if (personalBook) {
+        personalBook.addContact(contact1);
+        personalBook.displayContacts();
+    }
 
-    updateContact("Pallavi", { city: "Bhopal", email: "pallavi.parihar@gmail.com" });
-    displayContacts();
+    if (workBook) {
+        workBook.addContact(contact2);
+        workBook.displayContacts();
+    }
 
-    deleteContact("pallavi");
-    displayContacts();
+    if (personalBook) {
+        personalBook.updateContact("Mokshini", { city: "Mumbai", email: "mokshini.newemail@gmail.com" });
+        personalBook.displayContacts();
+    }
+
+    if (workBook) {
+        workBook.deleteContact("Bhavesh");
+        workBook.displayContacts();
+    }
+
 } catch (error) {
     console.error(error.message);
 }
