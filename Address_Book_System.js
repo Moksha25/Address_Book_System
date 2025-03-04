@@ -102,6 +102,12 @@ class AddressBook {
             console.log(" Contact Not Found!");
         }
     }
+
+    getContactCount() {
+        let count = this.contacts.reduce((acc, contact) => acc + 1, 0);
+        console.log(`📊 Total Contacts in "${this.name}": ${count}\n`);
+        return count;
+    }
 }
 
 let addressBooks = {};
@@ -112,7 +118,7 @@ function createAddressBook(name) {
         return;
     }
     addressBooks[name] = new AddressBook(name);
-    console.log(`✅ New Address Book "${name}" Created!\n`);
+    console.log(` New Address Book "${name}" Created!\n`);
 }
 
 function getAddressBook(name) {
@@ -132,11 +138,13 @@ try {
     if (personalBook) {
         personalBook.addContact(contact1);
         personalBook.displayContacts();
+        personalBook.getContactCount(); 
     }
 
     if (workBook) {
         workBook.addContact(contact2);
         workBook.displayContacts();
+        workBook.getContactCount();
     }
 
     let foundContact = personalBook ? personalBook.findContact("Mokshini") : null;
@@ -144,6 +152,7 @@ try {
         console.log("\n Contact Found:", foundContact);
         personalBook.updateContact("Mokshini", { city: "Mumbai", email: "mokshini.newemail@gmail.com" });
         personalBook.displayContacts();
+        personalBook.getContactCount();
     } else {
         console.log(" Contact Not Found!");
     }
@@ -151,11 +160,13 @@ try {
     if (workBook) {
         workBook.deleteContact("Bhavesh");
         workBook.displayContacts();
+        workBook.getContactCount();
     }
 
     if (personalBook) {
         personalBook.deleteContact("Mokshini");
         personalBook.displayContacts();
+        personalBook.getContactCount(); 
     }
 
 } catch (error) {
