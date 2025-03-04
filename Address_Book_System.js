@@ -58,11 +58,11 @@ class AddressBook {
 
     addContact(contact) {
         this.contacts.push(contact);
-        console.log(`✅ Contact Added Successfully to ${this.name}!\n`);
+        console.log(` Contact Added Successfully to ${this.name}!\n`);
     }
 
     displayContacts() {
-        console.log(`\n--- 📖 Address Book: ${this.name} ---`);
+        console.log(`\n Address Book: ${this.name} ---`);
         if (this.contacts.length === 0) {
             console.log("No contacts available.");
             return;
@@ -95,8 +95,9 @@ class AddressBook {
     deleteContact(name) {
         let index = this.contacts.findIndex(c => c.firstName.toLowerCase() === name.toLowerCase());
         if (index !== -1) {
+            console.log(` Deleting Contact: ${this.contacts[index].firstName} ${this.contacts[index].lastName}`);
             this.contacts.splice(index, 1);
-            console.log(` Contact Deleted Successfully from ${this.name}!`);
+            console.log(` Contact Deleted Successfully from ${this.name}!\n`);
         } else {
             console.log(" Contact Not Found!");
         }
@@ -111,7 +112,7 @@ function createAddressBook(name) {
         return;
     }
     addressBooks[name] = new AddressBook(name);
-    console.log(` New Address Book "${name}" Created!\n`);
+    console.log(`✅ New Address Book "${name}" Created!\n`);
 }
 
 function getAddressBook(name) {
@@ -150,6 +151,11 @@ try {
     if (workBook) {
         workBook.deleteContact("Bhavesh");
         workBook.displayContacts();
+    }
+
+    if (personalBook) {
+        personalBook.deleteContact("Mokshini");
+        personalBook.displayContacts();
     }
 
 } catch (error) {
