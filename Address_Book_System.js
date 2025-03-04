@@ -56,7 +56,18 @@ class AddressBook {
         this.contacts = [];
     }
 
+    isDuplicate(contact) {
+        return this.contacts.some(
+            (c) => c.firstName.toLowerCase() === contact.firstName.toLowerCase() &&
+                   c.lastName.toLowerCase() === contact.lastName.toLowerCase()
+        );
+    }
+
     addContact(contact) {
+        if (this.isDuplicate(contact)) {
+            console.log(` Duplicate Entry: ${contact.firstName} ${contact.lastName} already exists in "${this.name}".`);
+            return;
+        }
         this.contacts.push(contact);
         console.log(` Contact Added Successfully to ${this.name}!\n`);
     }
@@ -104,7 +115,7 @@ class AddressBook {
     }
 
     getContactCount() {
-        let count = this.contacts.reduce((acc, contact) => acc + 1, 0);
+        let count = this.contacts.reduce((acc) => acc + 1, 0);
         console.log(`📊 Total Contacts in "${this.name}": ${count}\n`);
         return count;
     }
@@ -131,14 +142,16 @@ try {
 
     let contact1 = new Contact("Mokshini", "Baglekar", "Ahinsa vihar", "Bhopal", "Madhya Pradesh", "400001", "9301000083", "mokshini.baglekar@gmail.com");
     let contact2 = new Contact("Bhavesh", "Malviya", "Vijay nagar", "Indore", "Madhya Pradesh", "110001", "7690000686", "bhavesh.malviya@gmail.com");
+    let duplicateContact = new Contact("Mokshini", "Baglekar", "Somewhere", "Pune", "Maharashtra", "411001", "9876543210", "mokshini.duplicate@gmail.com");
 
     let personalBook = getAddressBook("Personal");
     let workBook = getAddressBook("Work");
 
     if (personalBook) {
         personalBook.addContact(contact1);
+        personalBook.addContact(duplicateContact);
         personalBook.displayContacts();
-        personalBook.getContactCount(); 
+        personalBook.getContactCount();
     }
 
     if (workBook) {
@@ -149,10 +162,10 @@ try {
 
     let foundContact = personalBook ? personalBook.findContact("Mokshini") : null;
     if (foundContact) {
-        console.log("\n Contact Found:", foundContact);
+        console.log("\n🔎 Contact Found:", foundContact);
         personalBook.updateContact("Mokshini", { city: "Mumbai", email: "mokshini.newemail@gmail.com" });
         personalBook.displayContacts();
-        personalBook.getContactCount();
+        personalBook.getContactCount(); 
     } else {
         console.log(" Contact Not Found!");
     }
